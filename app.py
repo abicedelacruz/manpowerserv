@@ -3,8 +3,10 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # Use a writable, persistent path on Render for the SQLite DB
-os.makedirs('/var/data', exist_ok=True)
-DB_PATH = '/var/data/abic_payroll.db'
+DATA_DIR = os.path.join(os.getcwd(), 'data')
+os.makedirs(DATA_DIR, exist_ok=True)
+DB_PATH = os.path.join(DATA_DIR, 'abic_payroll.db')
+
 
 BASE_DIR = os.path.dirname(__file__)
 
