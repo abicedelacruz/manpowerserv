@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card p-4">
+  <div class="d-flex justify-content-between">
+    <div><h4>ABIC Manpower</h4><div>Employee: <strong>{{ emp.name }}</strong></div><div>Username: {{ emp.username }}</div></div>
+    <div class="text-end"><h5>Payslip</h5><div>Period: {{ p.pay_period }}</div><div>Generated: {{ p.created_at }}</div></div>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-md-6">
+      <h6>Earnings</h6>
+      <table class="table">
+        <tr><td>Basic Pay</td><td>{{ '%.2f'|format(p.monthly_base or 0) }}</td></tr>
+        <tr><td>Incentives</td><td>{{ '%.2f'|format(p.incentives or 0) }}</td></tr>
+        <tr><td>OT / Premiums</td><td>{{ '%.2f'|format(p.total_earnings - (p.monthly_base or 0) - (p.incentives or 0) ) }}</td></tr>
+        <tr class="table-success"><td><strong>Gross</strong></td><td><strong>{{ '%.2f'|format(p.total_earnings or 0) }}</strong></td></tr>
+      </table>
+    </div>
+    <div class="col-md-6">
+      <h6>Deductions</h6>
+      <table class="table">
+        <tr><td>SSS</td><td>{{ '%.2f'|format(p.sss or 0) }}</td></tr>
+        <tr><td>PhilHealth</td><td>{{ '%.2f'|format(p.philhealth or 0) }}</td></tr>
+        <tr><td>Pag-IBIG</td><td>{{ '%.2f'|format(p.pagibig or 0) }}</td></tr>
+        <tr><td>Others</td><td>{{ '%.2f'|format(p.total_deductions - (p.sss or 0) - (p.philhealth or 0) - (p.pagibig or 0) ) }}</td></tr>
+        <tr class="table-danger"><td><strong>Total Deductions</strong></td><td><strong>{{ '%.2f'|format(p.total_deductions or 0) }}</strong></td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="text-end">
+    <h3>NET PAY: PHP {{ '%.2f'|format(p.netpay or 0) }}</h3>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Create Payroll for {{ emp.name }}</h3>
+<form method="post">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="mb-2"><label>Pay Period</label><input name="pay_period" class="form-control" value="{{ last.pay_period if last else '' }}"></div>
+      <div class="mb-2"><label>Pay Out</label><input name="pay_out" class="form-control" value="{{ last.pay_out if last else '' }}"></div>
+      <div class="mb-2"><label>Monthly Base</label><input name="monthly_base" type="number" class="form-control" value="{{ last.monthly_base if last else emp.monthly_salary }}"></div>
+      <div class="mb-2"><label>Daily Rate</label><input name="daily_rate" type="number" class="form-control" value="{{ last.daily_rate if last else '' }}"></div>
+      <div class="mb-2"><label>Hourly Rate</label><input name="hourly_rate" type="number" class="form-control" value="{{ last.hourly_rate if last else '' }}"></div>
+      <div class="mb-2"><label>Incentives</label><input name="incentives" type="number" class="form-control" value="{{ last.incentives if last else 0 }}"></div>
+    </div>
+    <div class="col-md-6">
+      <h5>Earnings (enter hours)</h5>
+      <div class="mb-2"><label>Regular OT (hrs)</label><input name="regular_ot_hrs" type="number" step="0.01" class="form-control" value="{{ last.regular_ot_hrs if last else 0 }}"></div>
+      <div class="mb-2"><label>Night Diff (hrs)</label><input name="night_diff_hrs" type="number" step="0.01" class="form-control" value="{{ last.night_diff_hrs if last else 0 }}"></div>
+      <div class="mb-2"><label>Restday F8 + E8 (hrs)</label><input name="restday_f8" type="number" step="0.01" class="form-control" value="{{ last.restday_f8 if last else 0 }}"></div>
+      <div class="mb-2"><label>Special Holiday hrs</label><input name="special_hol_hrs" type="number" step="0.01" class="form-control" value="{{ last.special_hol_hrs if last else 0 }}"></div>
+    </div>
+  </div>
+  <h5>Deductions</h5>
+  <div class="row">
+    <div class="col-md-4"><div class="mb-2"><label>SSS</label><input name="sss" type="number" step="0.01" class="form-control" value="{{ last.sss if last else 0 }}"></div></div>
+    <div class="col-md-4"><div class="mb-2"><label>PhilHealth</label><input name="philhealth" type="number" step="0.01" class="form-control" value="{{ last.philhealth if last else 0 }}"></div></div>
+    <div class="col-md-4"><div class="mb-2"><label>Pag-IBIG</label><input name="pagibig" type="number" step="0.01" class="form-control" value="{{ last.pagibig if last else 0 }}"></div></div>
+  </div>
+  <div class="mb-2"><label>Absences (days)</label><input name="absences" type="number" class="form-control" value="{{ last.absences if last else 0 }}"></div>
+  <button class="btn btn-success">Save Payroll</button>
+</form>
+{% endblock %}

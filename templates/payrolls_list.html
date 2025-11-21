@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Payrolls for {{ emp.name }}</h3>
+<a class="btn btn-secondary mb-3" href="{{ url_for('admin_dashboard') }}">Back</a>
+<table class="table table-striped">
+  <thead><tr><th>ID</th><th>Period</th><th>Created</th><th>Net Pay</th><th>Action</th></tr></thead>
+  <tbody>
+  {% for p in payrolls %}
+    <tr><td>{{ p.id }}</td><td>{{ p.pay_period }}</td><td>{{ p.created_at }}</td><td>{{ '%.2f'|format(p.netpay or 0) }}</td>
+    <td><a class="btn btn-sm btn-outline-primary" href="{{ url_for('employee_payslip', pid=p.id) }}">View (as employee)</a></td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

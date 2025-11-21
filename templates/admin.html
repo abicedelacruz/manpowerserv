@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>Admin Dashboard</h3>
+  <div>
+    <a class="btn btn-success" href="{{ url_for('add_employee') }}">Add Employee</a>
+  </div>
+</div>
+<table class="table table-striped">
+  <thead><tr><th>ID</th><th>Name</th><th>Client</th><th>Username</th><th>Monthly Salary</th><th>Actions</th></tr></thead>
+  <tbody>
+    {% for e in employees %}
+      <tr>
+        <td>{{ e.id }}</td>
+        <td>{{ e.name }}</td>
+        <td>{{ e.client }}</td>
+        <td>{{ e.username }}</td>
+        <td>{{ e.monthly_salary or 0 }}</td>
+        <td>
+          <a class="btn btn-sm btn-primary" href="{{ url_for('add_payroll', employee_id=e.id) }}">Add Payroll</a>
+          <a class="btn btn-sm btn-info" href="{{ url_for('view_payrolls', employee_id=e.id) }}">View Payrolls</a>
+          <form method="post" action="{{ url_for('delete_employee', eid=e.id) }}" style="display:inline" onsubmit="return confirm('Delete employee?')">
+            <button class="btn btn-sm btn-danger">Remove</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
