@@ -2,8 +2,11 @@ import os, sqlite3, secrets, datetime, math
 from flask import Flask, render_template, request, redirect, url_for, flash, session, g, send_from_directory
 from werkzeug.security import generate_password_hash, check_password_hash
 
+# Use a writable, persistent path on Render for the SQLite DB
+os.makedirs('/var/data', exist_ok=True)
+DB_PATH = '/var/data/abic_payroll.db'
+
 BASE_DIR = os.path.dirname(__file__)
-DB_PATH = os.path.join(BASE_DIR, 'abic_payroll.db')
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET', 'dev-secret-please-change')
@@ -11,11 +14,16 @@ app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET', 'dev-secret-please-cha
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
+        # sqlite3.connect will create the file if it doesn't exist (in writable path)
         db = g._database = sqlite3.connect(DB_PATH)
         db.row_factory = sqlite3.Row
     return db
 
 def init_db():
+    """
+    Creates tables if they don't exist and inserts a default admin user if absent.
+    This function is safe to call multiple times.
+    """
     db = get_db()
     c = db.cursor()
     # create tables
@@ -33,9 +41,9 @@ def init_db():
         name TEXT,
         client TEXT,
         username TEXT UNIQUE,
-        rest_day TEXT, -- e.g. Monday
-        schedule_start TEXT, -- e.g. 09:00
-        schedule_end TEXT, -- e.g. 18:00
+        rest_day TEXT,
+        schedule_start TEXT,
+        schedule_end TEXT,
         monthly_salary REAL
     );
     CREATE TABLE IF NOT EXISTS payrolls (
@@ -94,6 +102,7 @@ def init_db():
         c.execute('INSERT INTO users (name,email,username,password_hash,role) VALUES (?,?,?,?,?)',
                   ('Administrator','admin@abic.local','admin',generate_password_hash(password),'admin'))
         db.commit()
+        # Log to stdout so Render logs capture it
         print('Created default admin: username=admin password=', password)
 
 @app.teardown_appcontext
@@ -228,8 +237,8 @@ def add_payroll(employee_id):
     if request.method=='POST':
         form = request.form
         # minimal safe parsing of many fields; missing fields default 0
-        def f(name): 
-            v = form.get(name,'0').strip() 
+        def f(name):
+            v = form.get(name,'0').strip()
             return float(v) if v!='' else 0.0
         monthly_base = f('monthly_base')
         # derive daily/hourly if not provided
