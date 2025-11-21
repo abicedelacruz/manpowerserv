@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: abic-payroll
+    env: docker
+    dockerfilePath: Dockerfile
+    plan: free

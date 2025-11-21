@@ -1,0 +1,6 @@
+Flask>=2.0
+Werkzeug>=2.0
+itsdangerous>=2.0
+Jinja2>=3.0
+python-dotenv
+gunicorn>=20.0.4
